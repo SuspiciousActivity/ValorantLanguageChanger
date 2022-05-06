@@ -15,6 +15,9 @@ Want to hear those uwu-voices from japan but don't understand anything that is w
 9. The full target should now look like this: `powershell.exe -File "%localappdata%\ValorantLangChanger\vallc.ps1" "D:\Riot Games\Riot Client\RiotClientServices.exe" --launch-product=valorant --launch-patchline=live`. Press Ok.
 10. You can now use this shortcut to launch Valorant with different languages.
 
+## Is this a virus??
+No. If your antivirus has a problem with the exe file, it comes from [here](https://github.com/Morilli/ManifestDownloader). You can download the latest release there if you want. You can view the source of the ps1 script as well.
+
 ## Thanks to
 https://github.com/Morilli/ManifestDownloader this downloads the latest language files!
 
