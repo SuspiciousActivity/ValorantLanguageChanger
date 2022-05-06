@@ -29,8 +29,13 @@ try {
 	$patchConfig = ConvertFrom-Json (Invoke-WebRequest -Uri 'https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.valorant.patchlines').Content
 	$configs = $patchConfig.'keystone.products.valorant.patchlines.live'.platforms.win.configurations
 
+	$found = 0
+	$availableLocales = ''
+
 	foreach ($config in $configs) {
 		if ($config.valid_shards.live[0] -eq $region) {
+			$found = 1
+			$availableLocales = $config.locale_data.available_locales
 			$patchUrl = $config.patch_url
 
 			if ($patchUrl -ne $lastPatchUrl) {
@@ -41,8 +46,24 @@ try {
 			} else {
 			    Write-Output 'Up to date!'
 			}
+
+			if (!($availableLocales.Contains($textLang))) {
+				Write-Error (-join('Invalid "textLang" value: ', $textLang))
+				Write-Error (-join('Valid values are: ', [string]::Join(', ', $availableLocales)))
+				Exit
+			}
+			if (!($availableLocales.Contains($voiceLang))) {
+				Write-Error (-join('Invalid "voiceLang" value: ', $voiceLang))
+				Write-Error (-join('Valid values are: ', [string]::Join(', ', $availableLocales)))
+				Exit
+			}
 			break;
 		}
+	}
+
+	if ($found -eq 0) {
+		Write-Error (-join('Invalid "region" value: ', $region))
+		Exit
 	}
 } catch {
 	Write-Error 'Can not contact public valorant config'
