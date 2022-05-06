@@ -1,7 +1,15 @@
-# You need to fill there accordingly.
+# Please change these accordingly:
+# Upper/lowercase is important!
+
+# Language codes: en_US, de_DE, ar_AE, es_ES, es_MX, fr_FR, id_ID, it_IT, ja_JP, ko_KR, pl_PL, pt_BR, ru_RU, th_TH, tr_TR, vi_VN, zh_TW
+# The language code which you want the *text* to be in.
 $textLang = 'en_US'
+# The language code which you want the *voice* to be in.
 $voiceLang = 'ja_JP'
+# Your general Valorant region. (eu, na, kr, br, latam, ap)
 $region = 'eu'
+# The path to the game files. Go to your Valorant installation, the path below should always end in
+# '.../ShooterGame/Content/Paks/'! Notice the / at the end.
 $pakPath = 'D:/Riot Games/VALORANT/live/ShooterGame/Content/Paks/'
 # You are done with the configuration.
 
