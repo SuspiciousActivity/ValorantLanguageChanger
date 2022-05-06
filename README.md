@@ -11,8 +11,8 @@ Want to hear those uwu-voices from japan but don't understand anything that is w
 5. Open vallc.ps1 in your favorite text editor. Change the top 4 values accordingly and save it.
 6. Copy your Valorant shortcut, then right-click the copy and select Properties.
 7. In the target field, there should be something like this: `"D:\Riot Games\Riot Client\RiotClientServices.exe" --launch-product=valorant --launch-patchline=live`.
-8. Infront of that, put `powershell.exe -File "%localappdata%\ValorantLangChanger\vallc.ps1" `. Notice the space at the end.
-9. The full target should now look like this: `powershell.exe -File "%localappdata%\ValorantLangChanger\vallc.ps1" "D:\Riot Games\Riot Client\RiotClientServices.exe" --launch-product=valorant --launch-patchline=live`. Press Ok.
+8. Infront of that, put `powershell.exe -ExecutionPolicy Bypass -File "%localappdata%\ValorantLangChanger\vallc.ps1" `. Notice the space at the end.
+9. The full target should now look like this: `powershell.exe -ExecutionPolicy Bypass -File "%localappdata%\ValorantLangChanger\vallc.ps1" "D:\Riot Games\Riot Client\RiotClientServices.exe" --launch-product=valorant --launch-patchline=live`. Press Ok.
 10. You can now use this shortcut to launch Valorant with different languages.
 
 ## Is this a virus??
