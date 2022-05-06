@@ -4,8 +4,8 @@ Changes the text language for valorant while keeping the voice language.
 Want to hear those uwu-voices from japan but don't understand anything that is written there? It's your lucky day!
 
 ## Usage
-1. Download this repository and put the contents into a folder.
-2. Right-click the vallc.ps1 file and "Run with PowerShell". A folder should open now. (If it doesn't, please go to %localappdata% and create a folder called "ValorantLangChanger".)
+1. Download this repository (from the release tab) and put the contents into a folder.
+2. Right-click the vallc.ps1 file and "Run with PowerShell". A folder should open now. (If it doesn't, please go to `%localappdata%` and create a folder called `ValorantLangChanger`.)
 3. Put the vallc.ps1 file and the ManifestDownloader.exe into that folder.
 4. Open vallc.ps1 in your favorite text editor. Change the top 4 values accordingly and save it.
 5. Copy your Valorant shortcut, then right-click the copy and select Properties.
