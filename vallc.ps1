@@ -1,7 +1,9 @@
-$textLang = 'de_DE'
+# You need to fill there accordingly.
+$textLang = 'en_US'
 $voiceLang = 'ja_JP'
 $region = 'eu'
-$pakPath = 'G:/Valorant/Riot Games/VALORANT/live/ShooterGame/Content/Paks/'
+$pakPath = 'D:/Riot Games/VALORANT/live/ShooterGame/Content/Paks/'
+# You are done with the configuration.
 
 $savePath = "$($env:LOCALAPPDATA)/ValorantLangChanger/"
 $savePakPath = 'ShooterGame/Content/Paks/'
