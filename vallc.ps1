@@ -26,6 +26,13 @@ if ($args.count -eq 0) {
 	Exit
 }
 
+$checkBefore = Get-WmiObject -Class 'win32_process' -Filter 'name = "VALORANT.exe"'
+if ($checkBefore) {
+	Write-Output 'Valorant is already running. Please close Valorant first.'
+	Read-Host 'Press enter to continue...'
+	Exit
+}
+
 # download/update lang files
 Write-Output 'Checking for new language files...'
 try {
