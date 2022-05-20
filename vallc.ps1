@@ -33,7 +33,9 @@ try {
 	Write-Host 'Fetching VALORANT config from Riot Games...' -ForegroundColor Green
 	$patchConfigs = (ConvertFrom-Json (Invoke-WebRequest -Uri 'https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.valorant.patchlines').Content).'keystone.products.valorant.patchlines.live'.platforms.win.configurations
 } catch {
+	Write-Host 'Error contacting Riot Games servers' -ForegroundColor Red
 	Write-Host $_
+	Read-Host
 	Exit
 }
 
@@ -201,14 +203,21 @@ try {
 
 	if ($patchUrl -ne $lastPatchUrl) {
 		Write-Host 'Downloading new language files...' -ForegroundColor Green
-		$patchUrl | Out-File -FilePath (-join($savePath, 'url.txt'))
-		Start-Process -Wait -NoNewWindow -FilePath (-join($savePath, $manifestDownloaderFile)) -ArgumentList ($patchUrl,'-b','https://valorant.secure.dyn.riotcdn.net/channels/public/bundles','-l',$config.textLang,$config.voiceLang,'-o',$savePath,'-f','.+Text-WindowsClient.+')
-		Write-Host 'Downloaded new language files!' -ForegroundColor Green
+		$downloaderProcess = Start-Process -PassThru -Wait -NoNewWindow -FilePath (-join($savePath, $manifestDownloaderFile)) -ArgumentList ($patchUrl,'-b','https://valorant.secure.dyn.riotcdn.net/channels/public/bundles','-l',$config.textLang,$config.voiceLang,'-o',$savePath,'-f','.+Text-WindowsClient.+')
+		if ($downloaderProcess.ExitCode -eq 0) {
+			$patchUrl | Out-File -FilePath (-join($savePath, 'url.txt'))
+			Write-Host 'Downloaded new language files!' -ForegroundColor Green
+		} else {
+			Write-Host 'Error trying to download new language files!' -ForegroundColor Red
+			Read-Host
+			Exit
+		}
 	} else {
 		Write-Host 'Up to date!' -ForegroundColor Green
 	}
 } catch {
 	Write-Error 'Can not check for new language files' -ForegroundColor Red
+	Read-Host
 	Exit
 }
 
