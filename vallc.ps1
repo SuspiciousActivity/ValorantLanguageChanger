@@ -52,105 +52,135 @@ if (Test-Path $configPath) {
 	}
 }
 
-$modified = 0
-$tried = 0
-while (!$valid.regions.Contains($config.region)) {
-	$modified = 1
-	if ($tried -eq 1) {
-		Write-Host 'That is not a valid region!' -ForegroundColor Red
+$outer = @{}
+
+function Ensure-Config {
+	$outer.modified = 0
+	$tried = 0
+	while (!$valid.regions.Contains($config.region)) {
+		$outer.modified = 1
+		if ($tried -eq 1) {
+			Write-Host 'That is not a valid region!' -ForegroundColor Red
+		}
+		Write-Host 'Please enter your general region:' -ForegroundColor Yellow
+		Write-Host (-join('(', [string]::Join(', ', $valid.regions), ')')) -ForegroundColor DarkGray
+		$config.region = Read-Host
+		$tried = 1
 	}
-	Write-Host 'Please enter your general region:' -ForegroundColor Yellow
-	Write-Host (-join('(', [string]::Join(', ', $valid.regions), ')')) -ForegroundColor DarkGray
-	$config.region = Read-Host
-	$tried = 1
-}
 
-$regionConfig = $patchConfigs | Where-Object 'id' -eq $config.region
-$valid.langs = $regionConfig | ForEach-Object {$_.locale_data.available_locales}
+	$outer.regionConfig = $patchConfigs | Where-Object 'id' -eq $config.region
+	$valid.langs = $outer.regionConfig | ForEach-Object {$_.locale_data.available_locales}
 
-$tried = 0
-while (!$valid.langs.Contains($config.voiceLang)) {
-	$modified = 1
-	if ($tried -eq 1) {
-		Write-Host 'That is not a valid language!' -ForegroundColor Red
+	$tried = 0
+	while (!$valid.langs.Contains($config.voiceLang)) {
+		$outer.modified = 1
+		if ($tried -eq 1) {
+			Write-Host 'That is not a valid language!' -ForegroundColor Red
+		}
+		Write-Host 'Please enter your voice language:' -ForegroundColor Yellow
+		Write-Host (-join('(', [string]::Join(', ', $valid.langs), ')')) -ForegroundColor DarkGray
+		$config.voiceLang = Read-Host
+		$tried = 1
 	}
-	Write-Host 'Please enter your voice language:' -ForegroundColor Yellow
-	Write-Host (-join('(', [string]::Join(', ', $valid.langs), ')')) -ForegroundColor DarkGray
-	$config.voiceLang = Read-Host
-	$tried = 1
-}
 
-$tried = 0
-while (!$valid.langs.Contains($config.textLang)) {
-	$modified = 1
-	if ($tried -eq 1) {
-		Write-Host 'That is not a valid language!' -ForegroundColor Red
+	$tried = 0
+	while (!$valid.langs.Contains($config.textLang)) {
+		$outer.modified = 1
+		if ($tried -eq 1) {
+			Write-Host 'That is not a valid language!' -ForegroundColor Red
+		}
+		Write-Host 'Please enter your text language:' -ForegroundColor Yellow
+		Write-Host (-join('(', [string]::Join(', ', $valid.langs), ')')) -ForegroundColor DarkGray
+		$config.textLang = Read-Host
+		$tried = 1
 	}
-	Write-Host 'Please enter your text language:' -ForegroundColor Yellow
-	Write-Host (-join('(', [string]::Join(', ', $valid.langs), ')')) -ForegroundColor DarkGray
-	$config.textLang = Read-Host
-	$tried = 1
-}
 
-$tried = 0
-:out while (($null -eq $config.pakPath) -or (!$config.pakPath.EndsWith($savePakPath)) -or !(Test-Path $config.pakPath)) {
-	$modified = 1
-	if ($tried -eq 1) {
-		Write-Host 'That is not the correct folder!' -ForegroundColor Red
-	} else {
-		Write-Host 'Trying to find VALORANT...' -ForegroundColor Green
+	$tried = 0
+	:out while (($null -eq $config.pakPath) -or (!$config.pakPath.EndsWith($savePakPath)) -or !(Test-Path $config.pakPath)) {
+		$outer.modified = 1
+		if ($tried -eq 1) {
+			Write-Host 'That is not the correct folder!' -ForegroundColor Red
+		} else {
+			Write-Host 'Trying to find VALORANT...' -ForegroundColor Green
 
-		$drives = Get-PSDrive -PSProvider FileSystem | ForEach-Object {$_.Root}
-		foreach ($drive in $drives) {
-			$jsonPath = -join($drive, 'ProgramData\Riot Games\RiotClientInstalls.json')
-			if (!(Test-Path $jsonPath)) {
-				continue
-			}
+			$drives = Get-PSDrive -PSProvider FileSystem | ForEach-Object {$_.Root}
+			foreach ($drive in $drives) {
+				$jsonPath = -join($drive, 'ProgramData\Riot Games\RiotClientInstalls.json')
+				if (!(Test-Path $jsonPath)) {
+					continue
+				}
 
-			$installs = Get-Content ($jsonPath) | ConvertFrom-Json
-			$installPaths = $installs.associated_client.PSObject.Properties.Name
-			foreach ($path in $installPaths) {
-				$path = $path.Replace('\', '/')
-				if ($path.EndsWith('VALORANT/live/')) {
-					$config.pakPath = -join($path, $savePakPath)
-					if (Test-Path $config.pakPath) {
-						Write-Host 'Found it!' -ForegroundColor Green
-						break out
+				$installs = Get-Content ($jsonPath) | ConvertFrom-Json
+				$installPaths = $installs.associated_client.PSObject.Properties.Name
+				foreach ($path in $installPaths) {
+					$path = $path.Replace('\', '/')
+					if ($path.EndsWith('VALORANT/live/')) {
+						$config.pakPath = -join($path, $savePakPath)
+						if (Test-Path $config.pakPath) {
+							Write-Host 'Found it!' -ForegroundColor Green
+							break out
+						}
 					}
 				}
 			}
+
+			if (($null -eq $config.pakPath) -or !(Test-Path $config.pakPath)) {
+				Write-Host 'Sorry, can''t find VALORANT.' -ForegroundColor Red
+			}
+		}
+		if (!$FileBrowser) {
+			Add-Type -AssemblyName System.Windows.Forms
+			$FileBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
 		}
 
-		if (($null -eq $config.pakPath) -or !(Test-Path $config.pakPath)) {
-			Write-Host 'Sorry, can''t find VALORANT.' -ForegroundColor Red
+		Write-Host 'A window to select a folder will now open.' -ForegroundColor Yellow
+		Write-Host 'Please go to your VALORANT installation folder.' -ForegroundColor Yellow
+		Write-Host (-join('In that folder, please find "', $savePakPath, '" and press Open.')) -ForegroundColor Yellow
+		
+		$status = $FileBrowser.ShowDialog()
+		if ($status -eq 'OK') {
+			$config.pakPath = $FileBrowser.SelectedPath.Replace('\', '/')
+			if (!$config.pakPath.EndsWith('/')) {
+				$config.pakPath = -join($config.pakPath, '/')
+			}
 		}
-	}
-	if (!$FileBrowser) {
-		Add-Type -AssemblyName System.Windows.Forms
-		$FileBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+		$tried = 1
 	}
 
-	Write-Host 'A window to select a folder will now open.' -ForegroundColor Yellow
-	Write-Host 'Please go to your VALORANT installation folder.' -ForegroundColor Yellow
-	Write-Host (-join('In that folder, please find "', $savePakPath, '" and press Open.')) -ForegroundColor Yellow
-	
-	$status = $FileBrowser.ShowDialog()
-	if ($status -eq 'OK') {
-		$config.pakPath = $FileBrowser.SelectedPath.Replace('\', '/')
-		if (!$config.pakPath.EndsWith('/')) {
-			$config.pakPath = -join($config.pakPath, '/')
-		}
+	# save the config
+	if ($outer.modified -eq 1) {
+		$config.GetEnumerator() | Select Key, Value | Export-Csv (-join($savePath, 'config.csv'))
 	}
-	$tried = 1
 }
 
-# save the config
-if ($modified -eq 1) {
-	$config.GetEnumerator() | Select Key, Value | Export-Csv (-join($savePath, 'config.csv'))
-}
+Ensure-Config
 
 # continue setup
 if ($args.count -eq 0) {
+	if ($outer.modified -eq 0) {
+		$tried = 0
+		while ($true) {
+			if ($tried -eq 1) {
+				Write-Host 'That is not a valid choice!' -ForegroundColor Red
+			}
+			Write-Host 'What do you want to do? (Please type the number of your choice)' -ForegroundColor Yellow
+			Write-Host '1. Create a shortcut' -ForegroundColor Yellow
+			Write-Host '2. Run setup from the start (change region, language, ...)' -ForegroundColor Yellow
+			$choice = Read-Host
+			if ($choice -eq "1") {
+				break
+			} elseif ($choice -eq "2") {
+				$config = @{}
+				Ensure-Config
+				Write-Host 'Saved new config!' -ForegroundColor Green
+				Write-Host 'Press enter to exit.' -ForegroundColor DarkGray
+				Read-Host
+				Exit
+			}
+			$tried = 1
+		}
+	}
+
 	$shell = New-Object -COM WScript.Shell
 
 	$tried = 0
@@ -159,6 +189,7 @@ if ($args.count -eq 0) {
 			Write-Host 'That is not a valid path to a shortcut!' -ForegroundColor Red
 		}
 		Write-Host 'Please drag your VALORANT shortcut into this window and press enter.' -ForegroundColor Yellow
+		Write-Host '(The file which you double-click to start Valorant usually.)' -ForegroundColor DarkGray
 		Write-Host '(The path to the shortcut should appear.)' -ForegroundColor DarkGray
 		$shortcutPath = (Read-Host).Replace('"', '')
 		$tried = 1
@@ -178,7 +209,8 @@ if ($args.count -eq 0) {
 	Invoke-WebRequest -UseBasicParsing -Uri $manifestDownloaderUrl -OutFile (-join($savePath, $manifestDownloaderFile))
 
 	Write-Host 'Done! You can now close this window and start VALORANT from the new icon on your desktop!' -ForegroundColor Green
-	Write-Host 'You can also delete this file now.' -ForegroundColor Green
+	Write-Host 'You could delete this file now.' -ForegroundColor Green
+	Write-Host 'If you want to change anything (like your language), just (download and) run this script again.' -ForegroundColor Green
 	Read-Host
 	Exit
 }
@@ -199,7 +231,7 @@ try {
 		$lastPatchUrl = Get-Content -Path (-join($savePath, 'url.txt'))
 	}
 
-	$patchUrl = $regionConfig.patch_url
+	$patchUrl = $outer.regionConfig.patch_url
 
 	if ($patchUrl -ne $lastPatchUrl) {
 		Write-Host 'Downloading new language files...' -ForegroundColor Green
@@ -216,9 +248,16 @@ try {
 		Write-Host 'Up to date!' -ForegroundColor Green
 	}
 } catch {
-	Write-Error 'Can not check for new language files' -ForegroundColor Red
+	Write-Host 'Can not check for new language files' -ForegroundColor Red
+	Write-Host $_
 	Read-Host
 	Exit
+}
+
+if (!(Test-Path (-join($config.pakPath, $config.voiceLang, '_Text-WindowsClient.pak')))) {
+	Write-Host (-join('Please change your language *ingame* to ', $config.voiceLang, '!')) -ForegroundColor Red
+	Write-Host 'Press enter to continue, after you changed your language, please restart Valorant.' -ForegroundColor Red
+	Read-Host
 }
 
 Write-Host 'Starting Valorant...' -ForegroundColor Green
