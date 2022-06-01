@@ -6,7 +6,7 @@ Want to hear those uwu-voices from japan but don't understand anything that is w
 ## Usage
 1. Change your ingame language to whatever you want the *voice* language to be.
 2. Download the latest vallc.ps1 file from [here](https://github.com/SuspiciousActivity/ValorantLanguageChanger/releases).
-3. Right click and choose "Run with PowerShell".
+3. Right click and choose "Run with PowerShell". (If the setup doesn't show up, try using the start.bat)
 4. Follow the setup and have fun!
 
 ## Is this a virus??
