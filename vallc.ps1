@@ -31,7 +31,7 @@ if (!(Test-Path $savePath)) {
 
 try {
 	Write-Host 'Fetching VALORANT config from Riot Games...' -ForegroundColor Green
-	$patchConfigs = (ConvertFrom-Json (Invoke-WebRequest -Uri 'https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.valorant.patchlines').Content).'keystone.products.valorant.patchlines.live'.platforms.win.configurations
+	$patchConfigs = (ConvertFrom-Json (Invoke-WebRequest -UseBasicParsing -Uri 'https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.valorant.patchlines').Content).'keystone.products.valorant.patchlines.live'.platforms.win.configurations
 } catch {
 	Write-Host 'Error contacting Riot Games servers' -ForegroundColor Red
 	Write-Host $_
@@ -175,7 +175,7 @@ if ($args.count -eq 0) {
 	Write-Host 'Setting up all the files...' -ForegroundColor Green
 	$psPath = $MyInvocation.MyCommand.Path
 	Copy-Item $psPath (-join($savePath, 'vallc.ps1'))
-	Invoke-WebRequest -Uri $manifestDownloaderUrl -OutFile (-join($savePath, $manifestDownloaderFile))
+	Invoke-WebRequest -UseBasicParsing -Uri $manifestDownloaderUrl -OutFile (-join($savePath, $manifestDownloaderFile))
 
 	Write-Host 'Done! You can now close this window and start VALORANT from the new icon on your desktop!' -ForegroundColor Green
 	Write-Host 'You can also delete this file now.' -ForegroundColor Green
