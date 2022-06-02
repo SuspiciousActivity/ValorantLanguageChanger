@@ -227,6 +227,12 @@ if ($checkBefore) {
 Write-Host 'Checking for new language files...' -ForegroundColor DarkGray
 try {
 	$lastPatchUrl = ''
+
+	# check if both lang files exist, if not download
+	if (!(Test-Path (-join($savePath, $savePakPath, $config.textLang, '_Text-WindowsClient.pak'))) -or !(Test-Path (-join($savePath, $savePakPath, $config.voiceLang, '_Text-WindowsClient.pak')))) {
+		Remove-Item (-join($savePath, 'url.txt'))
+	}
+
 	if (Test-Path (-join($savePath, 'url.txt'))) {
 		$lastPatchUrl = Get-Content -Path (-join($savePath, 'url.txt'))
 	}
