@@ -5,9 +5,10 @@ Want to hear those uwu-voices from japan but don't understand anything that is w
 
 ## Usage
 1. Change your ingame language to whatever you want the *voice* language to be.
-2. Download the latest vallc.ps1 file from [here](https://github.com/SuspiciousActivity/ValorantLanguageChanger/releases).
-3. Right click and choose "Run with PowerShell". (If the setup doesn't show up, try using the start.bat)
+2. Download the latest VLC.zip file from [here](https://github.com/SuspiciousActivity/ValorantLanguageChanger/releases/latest/download/VLC.zip) and unpack it somewhere.
+3. Run the start.bat file.
 4. Follow the setup and have fun!
+5. You can delete the zip and the unpacked files afterwards.
 
 ## Is this a virus??
 No. This file downloads an additional exe file from [here (github.com)](https://github.com/Morilli/ManifestDownloader) which might be flagged as a virus.  
