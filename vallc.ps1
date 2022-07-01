@@ -229,7 +229,7 @@ try {
 	$lastPatchUrl = ''
 
 	# check if both lang files exist, if not download
-	if (Test-Path (-join($savePath, 'url.txt')) -and (!(Test-Path (-join($savePath, $savePakPath, $config.textLang, '_Text-WindowsClient.pak'))) -or !(Test-Path (-join($savePath, $savePakPath, $config.voiceLang, '_Text-WindowsClient.pak'))))) {
+	if ((Test-Path (-join($savePath, 'url.txt'))) -and (!(Test-Path (-join($savePath, $savePakPath, $config.textLang, '_Text-WindowsClient.pak'))) -or !(Test-Path (-join($savePath, $savePakPath, $config.voiceLang, '_Text-WindowsClient.pak'))))) {
 		Remove-Item (-join($savePath, 'url.txt'))
 	}
 
