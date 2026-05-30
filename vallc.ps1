@@ -1,7 +1,7 @@
 $savePath = "$($env:LOCALAPPDATA)/ValorantLangChanger/"
 $configPath = -join($savePath, 'config.csv')
 $savePakPath = 'ShooterGame/Content/Paks/'
-$manifestDownloaderUrl = 'https://github.com/Morilli/ManifestDownloader/releases/download/v1.8.2/ManifestDownloader.exe'
+$manifestDownloaderUrl = 'https://github.com/Morilli/ManifestDownloader/releases/download/v2.0_fix1/ManifestDownloader.exe'
 
 function Get-Hash([string]$textToHash) {
 	$hasher = new-object System.Security.Cryptography.MD5CryptoServiceProvider
